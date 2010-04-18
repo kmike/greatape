@@ -35,7 +35,9 @@ class MailChimp(object):
                     self.data_center, querystring))
         try:
             handle = urllib2.urlopen(req)
-            return json.loads(handle.read())
+            response = json.loads(handle.read())
+            if 'error' in response:
+                raise MailChimpError(response['error'])
         except urllib2.HTTPError, e:
             if (e.code == 304):
                 return []
