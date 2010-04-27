@@ -38,6 +38,7 @@ class MailChimp(object):
             response = json.loads(handle.read())
             if 'error' in response:
                 raise MailChimpError(response['error'])
+            return response
         except urllib2.HTTPError, e:
             if (e.code == 304):
                 return []
