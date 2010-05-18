@@ -1,6 +1,6 @@
 from urllib import urlencode, quote_plus
+from datetime import datetime, date
 import urllib2
-
 
 try:
     import functools
@@ -79,7 +79,7 @@ class MailChimp(object):
             if type(value) in (list, dict):
                 pairs.append(self._serialize(value, name))
             elif value is not None:
-                if type(value) == bool:
+                if type(value) in (bool, datetime, date, int):
                     value = str(value).lower()
                 pairs.append('%s=%s' % (name, quote_plus(value)))
         return '&'.join(pairs)
