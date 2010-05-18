@@ -51,8 +51,11 @@ class MailChimp(object):
         try:
             handle = urllib2.urlopen(req)
             response = json.loads(handle.read())
-            if 'error' in response:
-                raise MailChimpError(response['error'])
+            try:
+                if 'error' in response:
+                    raise MailChimpError(response['error'])
+            except TypeError: # the response was boolean
+                pass
             return response
         except urllib2.HTTPError, e:
             if (e.code == 304):
@@ -74,7 +77,7 @@ class MailChimp(object):
             if key is not None:
                 name = '%s[%s]' % (key, name)
             if type(value) in (list, dict):
-                pairs.append(self._serialize(value, name))        
+                pairs.append(self._serialize(value, name))
             elif value is not None:
                 if type(value) == bool:
                     value = str(value).lower()
