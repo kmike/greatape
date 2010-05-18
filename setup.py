@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "greatape",
-    version = "0.2.0",
+    version = "0.2.2",
     url = 'http://github.com/threadsafelabs/greatape',
     license = 'BSD',
     description = "A MailChimp API client.",
