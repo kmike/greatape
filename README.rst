@@ -24,3 +24,7 @@ for a complete list of available methods.
 
 ``greatape`` defaults to using SSL to access the MailChimp API.  If this isn't
 what you want, pass ``ssl=False`` to the ``MailChimp`` constructor.
+
+In case you desperately want to know exactly what resource you are hitting with
+what data, pass the constructor ``debug=True`` and you will get a print out of
+the URL and POST data just before the call is made.

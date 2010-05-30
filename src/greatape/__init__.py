@@ -31,10 +31,11 @@ class MailChimpError(Exception):
 
 
 class MailChimp(object):
-    def __init__(self, api_key, ssl=True):
+    def __init__(self, api_key, ssl=True, debug=False):
         self.data_center = api_key.rsplit('-', 1)[-1]
         self.api_key = api_key
         self.ssl = ssl
+        self.debug = debug
 
     def __getattr__(self, name):
         return partial(self, method=name)
@@ -52,6 +53,9 @@ class MailChimp(object):
             protocol = 'http'
         url = "%s://%s.api.mailchimp.com/1.2/?method=%s" % (
                     protocol, self.data_center, method)
+        if self.debug:
+            print 'URL:', url
+            print 'POST data:', params
         req = urllib2.Request(url, params)
         try:
             handle = urllib2.urlopen(req)
