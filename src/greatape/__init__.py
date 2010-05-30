@@ -31,9 +31,10 @@ class MailChimpError(Exception):
 
 
 class MailChimp(object):
-    def __init__(self, api_key):
+    def __init__(self, api_key, ssl=True):
         self.data_center = api_key.rsplit('-', 1)[-1]
         self.api_key = api_key
+        self.ssl = ssl
 
     def __getattr__(self, name):
         return partial(self, method=name)
@@ -45,9 +46,13 @@ class MailChimp(object):
             'method': kwargs.pop('method')
         }
         querystring = '%s&%s' % (urlencode(params), self._serialize(kwargs))
+        if self.ssl:
+            protocol = 'https'
+        else:
+            protocol = 'http'
         req = urllib2.Request(
-                "https://%s.api.mailchimp.com/1.2/?%s" % (
-                    self.data_center, querystring))
+                "%s://%s.api.mailchimp.com/1.2/?%s" % (
+                    protocol, self.data_center, querystring))
         try:
             handle = urllib2.urlopen(req)
             response = json.loads(handle.read())

@@ -21,3 +21,6 @@ Results will be returned as Python lists or dictionaries.  (Note that you do
 not need to provide your API key as a parameter other than to the constructor.)
 Refer to the `MailChimp API documentation <http://www.mailchimp.com/api/1.2/>`_
 for a complete list of available methods.
+
+``greatape`` defaults to using SSL to access the MailChimp API.  If this isn't
+what you want, pass ``ssl=False`` to the ``MailChimp`` constructor.
