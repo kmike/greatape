@@ -40,19 +40,19 @@ class MailChimp(object):
         return partial(self, method=name)
 
     def __call__(self, **kwargs):
-        params = {
+        method = kwargs.pop('method')
+        kwargs.update({
             'output': 'json',
             'apikey': self.api_key,
-            'method': kwargs.pop('method')
-        }
-        querystring = '%s&%s' % (urlencode(params), self._serialize(kwargs))
+        })
+        params = self._serialize(kwargs)
         if self.ssl:
             protocol = 'https'
         else:
             protocol = 'http'
-        req = urllib2.Request(
-                "%s://%s.api.mailchimp.com/1.2/?%s" % (
-                    protocol, self.data_center, querystring))
+        url = "%s://%s.api.mailchimp.com/1.2/?method=%s" % (
+                    protocol, self.data_center, method)
+        req = urllib2.Request(url, params)
         try:
             handle = urllib2.urlopen(req)
             response = json.loads(handle.read())
