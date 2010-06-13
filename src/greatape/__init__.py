@@ -31,22 +31,34 @@ class MailChimpError(Exception):
 
 
 class MailChimp(object):
-    def __init__(self, api_key, ssl=True, debug=False):
+    def __init__(self, api_key, ssl=True, debug=False, **kwargs):
         self.data_center = api_key.rsplit('-', 1)[-1]
         self.api_key = api_key
         self.ssl = ssl
         self.debug = debug
+        self.defaults = kwargs or {}
+        self.prefix = ''
 
     def __getattr__(self, name):
         return partial(self, method=name)
 
+    def list(self, id):
+        chimp = MailChimp(self.api_key, self.ssl, self.debug, **self.defaults)
+        chimp.defaults['id'] = id
+        chimp.prefix = 'list'
+        return chimp
+
     def __call__(self, **kwargs):
-        method = kwargs.pop('method')
+        method = self.prefix + kwargs.pop('method')
         kwargs.update({
             'output': 'json',
             'apikey': self.api_key,
         })
-        params = self._serialize(kwargs)
+
+        params_dict = self.defaults.copy()
+        params_dict.update(kwargs)
+
+        params = self._serialize(params_dict)
         if self.ssl:
             protocol = 'https'
         else:
